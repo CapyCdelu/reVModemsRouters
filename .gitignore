@@ -1,0 +1,9 @@
+# firmwares, volcados y configs: copyright del fabricante + claves del equipo
+*.bin
+*.BIN
+*.sqfs
+*.cfg
+*.xml
+work/
+dumps/
+__pycache__/
