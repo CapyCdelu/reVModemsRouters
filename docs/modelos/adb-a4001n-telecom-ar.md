@@ -46,6 +46,20 @@ CRC del tag en `0xD8` (imagen = rootfs+kernel), `0xDC` (rootfs), `0xE0` (kernel)
 - Riesgo pendiente: los bloques nuevos llevan marca de fin LZMA (el original no). El kernel usa `sqlzma`/`LzmaUncompress` (SDK 4.57), que corta por el tamaño de la cabecera, así que no debería afectar. Se confirma booteando.
 - **Pendiente:** grabar la imagen de la etapa 1 (sin cambios funcionales) y confirmar que arranca.
 
+### 2026-11-16 — Prueba en el equipo suspendida
+- Se iba a grabar `etapa1_cfe.bin` por la web de recuperación del CFE, pero el equipo **no encendió (falla eléctrica)**, así que la imagen no llegó a grabarse.
+- Al retomar: revisar la fuente o la alimentación, volver a leer la flash con el grabador y compararla con el volcado del 15-11 para confirmar que no cambió. Después seguir con el procedimiento de la sección siguiente.
+
+## Procedimiento de grabado por CFE (web de recuperación)
+
+1. PC con IP fija `192.168.1.100/255.255.255.0`, sin gateway, con un cable a un puerto LAN del módem y el wifi de la PC apagado.
+2. `ping -t 192.168.1.1`.
+3. Módem apagado → mantener reset → encender → seguir apretando 10-15 s → soltar.
+4. `http://192.168.1.1` → página "CFE – Update Software" (sin marca de Telecom; si aparece el login de Telecom, repetir el paso 3).
+5. Subir `<prefijo>_cfe.bin` → Update. No cortar la energía (1-3 min); se reinicia solo.
+6. Verificar: ping, web, wifi y, por SSH, `cat /proc/meminfo`, `cat /proc/mtd`, `dmesg | grep -i -E "squashfs|lzma|error"`.
+7. Si no arranca: volver al paso 3; si el CFE tampoco responde, grabar el volcado original con el grabador SPI.
+
 ## Próximas etapas
 
 2. Relevar las acciones `*.cmd` del `httpd` (parámetros de cada página de WAN/LAN/wifi).
